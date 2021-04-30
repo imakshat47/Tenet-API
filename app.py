@@ -25,7 +25,7 @@ def response(data={}, code=200):
         "data": data
     }
     response = make_response(jd(resp))
-    response.headers['Status Code'] = resp['code']
+    response.headers['Status-Code'] = resp['code']
     response.headers['Content-Type'] = "application/json"
     return response
 
