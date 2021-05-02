@@ -12,19 +12,31 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
     />
     <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width" />
     <title>Tenet System</title>
   </head>
 
   <body>
     <div class="container">
-      <div class="divider"></div>
-      <div class="section">
-        <h5>Tenet: OM System</h5>
-        <p>Home</p>
-      </div>
       <div class="row">
-        <div id="donutchart" style="width: 900px; height: 500px"></div>
+        <div class="divider"></div>
+        <div class="section">
+          <h5>Tenet: OM System</h5>
+          <p>Home</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col s12">
+          <div id="donutchart" style="width: 900px; height: 500px">
+            <div class="col m6 offset-m3">
+              <div class="progress">
+                <div class="indeterminate"></div>
+              </div>
+              <h5 class="center">Loading</h5>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -35,57 +47,47 @@
       type="text/javascript"
     ></script>
     <script type="text/javascript">
-      google.charts.load("current", { packages: ["corechart"] });
-      google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ["Task", "Hours per Day"],
-          ["Work", 11],
-          ["Eat", 2],
-          ["Commute", 2],
-          ["Watch TV", 2],
-          ["Sleep", 7],
-        ]);
+      // loads Charts
+      get_chart_data();
 
-        var options = {
-          title: "My Daily Activities",
-          pieHole: 0.4,
-        };
+      //   Get Chard Data Method
+      async function get_chart_data() {
+        M.toast({
+          html: "<b>Chart Loading...</b>",
+          classes: "rounded white-text blue lighten-1",
+        });
+        var chart_data = [["Task", "Hours per Day"]];
 
-        var chart = new google.visualization.PieChart(
-          document.getElementById("donutchart")
-        );
-        chart.draw(data, options);
-      }
-    </script>
-
-    <script>
-      async function get_chart() {
         const response = await fetch("https://tenet-api.herokuapp.com/record");
-
-        console.log(response);
         // Storing data in form of JSON
         var res = await response.json();
+        if (res.code == 200)
+          for (var key in res.data) chart_data.push([key, res.data[key]]);
+        console.log(chart_data);
 
-        if (res.code == 200) {
-          console.log(res.data);
-          // .forEach(function (key, value) {
-          //   console.log(key);
-          //   console.log(value);
-          // });
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+          var data = google.visualization.arrayToDataTable(chart_data);
+
+          var options = {
+            title: "Sentiment Score Visualization",
+            pieHole: 0.4,
+          };
+
+          var chart = new google.visualization.PieChart(
+            document.getElementById("donutchart")
+          );
+
+          chart.draw(data, options);
         }
+        // Reload Time
+        setTimeout(function () {
+          get_chart_data();
+        }, 3000);
+        // 3000
       }
-      var chart_data = [
-        ["Task", "Hours per Day"],
-        ["Work", 11],
-        ["Eat", 2],
-        ["Commute", 2],
-        ["Watch TV", 2],
-        ["Sleep", 7],
-      ];
-
-      get_chart();
-      console.log(chart_data);
     </script>
   </body>
 </html>
