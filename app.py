@@ -1,7 +1,7 @@
 from flask import Flask, json, request, make_response
 from bson import json_util
 import Mongodb as mongo
-
+import key
 # app
 app = Flask(__name__)
 # Mongo Object
@@ -13,9 +13,7 @@ db = mongo.MongoDB("tenet", "result")
 def jd(obj):
     return json.dumps(obj, default=json_util.default)
 
-#
 # Response
-#
 
 
 def response(data={}, code=200):
@@ -31,25 +29,26 @@ def response(data={}, code=200):
 # routes
 
 
-@app.route('/', methods=['GET', 'POST'])
-def result():
-    polarity = []
-    pos_polarity = []
-    neg_polarity = []
-    for row in db._find():
-        polarity[row['_id']] = row['polarity']
-        pos_polarity[row['_id']] = row['pos_polarity']
-        neg_polarity[row['_id']] = row['neg_polarity']
-
-    # return data
-    return response({"polarity": polarity, "pos_polarity": pos_polarity, "neg_polarity": neg_polarity})
+# @app.route('/', methods=['GET', 'POST'])
+# def result():
+#     polarity = []
+#     pos_polarity = []
+#     neg_polarity = []
+#     for row in db._find():
+#         polarity[row['_id']] = row['polarity']
+#         pos_polarity[row['_id']] = row['pos_polarity']
+#         neg_polarity[row['_id']] = row['neg_polarity']
+#     # return data
+#     return response({"polarity": polarity, "pos_polarity": pos_polarity, "neg_polarity": neg_polarity})
 
 
 @app.route('/record', methods=['GET', 'POST'])
 def record():
     res = db._find({"_id": key._tenet_record})
+    if res != None:
+        _ordinal = res[0]['ordinals']
     # return data
-    return response({"ordinals": res[0]['ordinals']})
+    return response({"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]})
 
 
 # Error handing
@@ -57,6 +56,6 @@ def record():
 def page_not_found(error):
     return response({}, 404)
 
-
+# Driver Method
 if __name__ == '__main__':
-    app.run(port=os.Getenv("PORT"), debug=True)
+    app.run(port=key._port, debug=True)
