@@ -1,8 +1,7 @@
 from flask import Flask, json, request, make_response
 from bson import json_util
 import Mongodb as mongo
-import os
-from os import environ
+import key
 # app
 app = Flask(__name__)
 # Mongo Object
@@ -45,16 +44,19 @@ def result():
     # return data
     return response({"polarity": polarity, "pos_polarity": pos_polarity, "neg_polarity": neg_polarity})
 
-#
+
+@app.route('/record', methods=['GET', 'POST'])
+def record():
+    res = db._find({"_id": key._tenet_record})
+    # return data
+    return response({"ordinals": res[0]['ordinals']})
+
+
 # Error handing
-#
-
-
 @app.errorhandler(404)
 def page_not_found(error):
     return response({}, 404)
 
 
 if __name__ == '__main__':
-    app.run(port=os.Getenv("PORT"), debug=True)
-    # log.Fatal(http.ListenAndServe(":" + os.Getenv("PORT"), router))
+    app.run(port=key._port, debug=True)
