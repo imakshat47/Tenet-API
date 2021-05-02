@@ -1,7 +1,9 @@
 from flask import Flask, json, request, make_response
 from bson import json_util
 import Mongodb as mongo
-import key
+import os
+from os import environ
+
 # app
 app = Flask(__name__)
 # Mongo Object
@@ -56,6 +58,7 @@ def record():
 def page_not_found(error):
     return response({}, 404)
 
+
 # Driver Method
 if __name__ == '__main__':
-    app.run(port=key._port, debug=True)
+    app.run(port=os.Getenv("PORT"), debug=True)
