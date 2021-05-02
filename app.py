@@ -33,9 +33,9 @@ def response(data={}, code=200):
 
 @app.route('/', methods=['GET', 'POST'])
 def result():
-    polarity = {}
-    pos_polarity = {}
-    neg_polarity = {}
+    polarity = []
+    pos_polarity = []
+    neg_polarity = []
     for row in db._find():
         polarity[row['_id']] = row['polarity']
         pos_polarity[row['_id']] = row['pos_polarity']
