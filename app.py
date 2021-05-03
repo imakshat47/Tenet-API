@@ -20,6 +20,8 @@ def jd(obj):
     return json.dumps(obj, default=json_util.default)
 
 # Response
+
+
 def response(data={}, code=200):
     resp = {
         "code": code,
@@ -52,7 +54,8 @@ def record():
     res = _db.find({"_id": key._tenet_record})
     if res != None:
         _ordinal = res[0]['ordinals']
-    _differ_polarity = db.find({"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
+    _differ_polarity = db.find(
+        {"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
     _polarity = db.find({"$expr": {"$ne": ["$polarity", None]}}).count()
     # return data
     return response({"left_processed": _polarity,  "differ_polarity": _differ_polarity, "ordinals": {"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]}})
