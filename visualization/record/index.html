@@ -23,6 +23,15 @@
         <div class="section">
           <h5>Tenet: OM System</h5>
           <p>Home</p>
+
+          <div class="right">
+            <span class="new badge">
+              <i id="differ_polarity">4000</i>
+            </span>
+            <span class="new badge">
+              <i id="left_processed">1000</i>
+            </span>
+          </div>
         </div>
       </div>
 
@@ -62,6 +71,7 @@
         // Storing data in form of JSON
         var res = await response.json();
         if (res.code == 200) {
+          console.log(res.data);
           // over api data
           for (var key in res.data)
             document.getElementById(key).html(res.data[key]);
@@ -69,7 +79,7 @@
           for (var key in res.data.ordinals)
             chart_data.push([key, res.data.ordinals[key]]);
         }
-        // console.log(chart_data);
+        console.log(chart_data);
 
         google.charts.load("current", { packages: ["corechart"] });
         google.charts.setOnLoadCallback(drawChart);
