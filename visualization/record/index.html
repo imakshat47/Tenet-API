@@ -23,14 +23,11 @@
         <div class="section">
           <h5>Tenet: OM System</h5>
           <p>Home</p>
-
-          <div class="right" id="badges">
-            <span class="badge">
-              <i id="differ_polarity">4000</i>
-            </span>
-            <span class="badge"> <i id="left_processed">1000</i> Left </span>
-          </div>
         </div>
+      </div>
+
+      <div class="row" id="badges">
+        <span class="new badge">Loading...</span>
       </div>
 
       <div class="row">
@@ -73,8 +70,8 @@
           // over api data
           var str = "";
           for (var key in res.data)
-            if (!Array.isArray(res.data[key]))
-              str += `<span class="badge"><i id="differ_polarity">${res.data[key]}</i></span>`;
+            if (key != "ordinals")
+              str += `<div class="chip">${key}: <i>${res.data[key]}</i></div>`;
           document.getElementById("badges").innerHTML = str;
           // over ordinals
           for (var key in res.data.ordinals)

@@ -59,7 +59,7 @@ def record():
     _total = db.find().count()
     _processed = int(int(_total) - int(_left_processed))
     # return data
-    return response({"total": _total, "processed": _processed, "left_processed": _left_processed,  "differ_polarity": _differ_polarity, "ordinals": {"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]}})
+    return response({"Total Record": _total, "Total Record Processed": _processed, "Total Record Not Processed": _left_processed,  "Total Record Imporved by MTS": _differ_polarity, "ordinals": {"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]}})
 
 
 # Error handing
