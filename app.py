@@ -54,11 +54,10 @@ def record():
     res = _db.find({"_id": key._tenet_record})
     if res != None:
         _ordinal = res[0]['ordinals']
-    _differ_polarity = db.find(
-        {"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
-    _left_processed = db.find({"$expr": {"$ne": ["$polarity", None]}}).count()
+    _differ_polarity = db.find({"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
+    _left_processed = db.find({"polarity": None}).count()
     _total = db.find().count()
-    _processed = _total - _left_processed
+    _processed = int(int(_total) - int(_left_processed))
     # return data
     return response({"total": _total, "processed": _processed, "left_processed": _left_processed,  "differ_polarity": _differ_polarity, "ordinals": {"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]}})
 
@@ -71,4 +70,4 @@ def page_not_found(error):
 
 # Driver Method
 if __name__ == '__main__':
-    app.run(port=os.Getenv("PORT"), debug=True)
+    app.run(port=5000, debug=True)
