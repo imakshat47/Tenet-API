@@ -56,9 +56,11 @@ def record():
         _ordinal = res[0]['ordinals']
     _differ_polarity = db.find(
         {"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
-    _polarity = db.find({"$expr": {"$ne": ["$polarity", None]}}).count()
+    _left_processed = db.find({"$expr": {"$ne": ["$polarity", None]}}).count()
+    _total = db.find().count()
+    _processed = _total - _left_processed
     # return data
-    return response({"left_processed": _polarity,  "differ_polarity": _differ_polarity, "ordinals": {"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]}})
+    return response({"total": _total, "processed": _processed, "left_processed": _polarity,  "differ_polarity": _differ_polarity, "ordinals": {"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]}})
 
 
 # Error handing

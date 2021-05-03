@@ -24,13 +24,11 @@
           <h5>Tenet: OM System</h5>
           <p>Home</p>
 
-          <div class="right">
+          <div class="right" id="badges">
             <span class="badge">
               <i id="differ_polarity">4000</i>
             </span>
-            <span class="badge">
-              <i id="left_processed">1000</i> Left
-            </span>
+            <span class="badge"> <i id="left_processed">1000</i> Left </span>
           </div>
         </div>
       </div>
@@ -73,8 +71,11 @@
         if (res.code == 200) {
           console.log(res.data);
           // over api data
+          var str = "";
           for (var key in res.data)
-            document.getElementById(key).html(res.data[key]);
+            if (!Array.isArray(res.data[key]))
+              str += `<span class="badge"><i id="differ_polarity">${res.data[key]}</i></span>`;
+          document.getElementById("badges").innerHTML = str;
           // over ordinals
           for (var key in res.data.ordinals)
             chart_data.push([key, res.data.ordinals[key]]);
