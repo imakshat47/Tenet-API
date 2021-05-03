@@ -1,25 +1,25 @@
 from flask import Flask, json, request, make_response
 from bson import json_util
-import Mongodb as mongo
 import key
+import pymongo
 import os
 from os import environ
 
 # app
 app = Flask(__name__)
-db = mongo.MongoDB("tenet", "tweets")
+
 # Mongo Object
-_db = mongo.MongoDB("tenet", "result")
+__client = pymongo.MongoClient(key._mongo_uri)
+__db = __client["tenet"]
+db = __db["tweets"]
+_db = __db["result"]
+
 
 # Json Dump
-
-
 def jd(obj):
     return json.dumps(obj, default=json_util.default)
 
 # Response
-
-
 def response(data={}, code=200):
     resp = {
         "code": code,
@@ -52,8 +52,8 @@ def record():
     res = _db._find({"_id": key._tenet_record})
     if res != None:
         _ordinal = res[0]['ordinals']
-    _differ_polarity = db.find({"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
-    _polarity = db.find({"$expr": {"$ne": ["$polarity", None]}}).count()
+    _differ_polarity = db._find({"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
+    _polarity = db._find({"$expr": {"$ne": ["$polarity", None]}}).count()
     # return data
     return response({"left_processed": _polarity,  "differ_polarity": _differ_polarity, "ordinals": {"Netural": _ordinal[0], "Good": _ordinal[1], "Very Good": _ordinal[2], "Bad": _ordinal[3], "Very Bad": _ordinal[4]}})
 
