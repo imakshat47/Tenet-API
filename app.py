@@ -52,14 +52,19 @@ def response(data={}, code=200):
 
 @app.route('/mts', methods=['GET', 'POST'])
 def mts():
-
-    _text = request.form.get("text")
-    _lang = request.form.get("lang")
+    # data = request.get_json()
+    if request.method == 'POST':
+        _text = request.form['text']
+        _lang = request.form['lang']
+    else:
+        _text = request.args.get("text", "")
+        _lang = request.args.get("lang", "")
     mts = MTS()
     _text = mts._translator(_text, _lang)
     _code = 200
     if _text == None:
         _code = 100
+        _text = "No Text Found!!"
     # return data
     return response({"text": _text, "lang": _lang}, _code)
 
