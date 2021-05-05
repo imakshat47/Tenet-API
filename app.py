@@ -4,6 +4,7 @@ import key
 import pymongo
 import os
 from os import environ
+from src.Mts import MTS
 
 # app
 app = Flask(__name__)
@@ -30,7 +31,7 @@ def response(data={}, code=200):
     response = make_response(jd(resp))
     response.headers['Status-Code'] = resp['code']
     response.headers['Content-Type'] = "application/json"
-    response.headers['Access-Control-Allow-Origin'] = "*"
+    # response.headers['Access-Control-Allow-Origin'] = "*"
     return response
 
 # routes
@@ -49,12 +50,26 @@ def response(data={}, code=200):
 #     return response({"polarity": polarity, "pos_polarity": pos_polarity, "neg_polarity": neg_polarity})
 
 
+@app.route('/mts', methods=['GET', 'POST'])
+def mts():
+
+    _text = request.form.get("text")
+    _lang = request.form.get("lang")
+    _text = "gstreckoner kindly also extend date of payment under svldrs scheme of service tax and excise matter lots of asseessee who default the payment due to covid19 situation are now ready to payment in these scheme for reduce his litigations please give one chance amp extend payment date as soon"    
+    _lang = "hi"
+    mts = MTS()
+    _text = mts._translator(_text, _lang)
+    # return data
+    return response({"text": _text, "lang": _lang})
+
+
 @app.route('/record', methods=['GET', 'POST'])
 def record():
     res = _db.find({"_id": key._tenet_record})
     if res != None:
         _ordinal = res[0]['ordinals']
-    _differ_polarity = db.find({"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
+    _differ_polarity = db.find(
+        {"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
     _left_processed = db.find({"polarity": None}).count()
     _total = db.find().count()
     _processed = int(int(_total) - int(_left_processed))

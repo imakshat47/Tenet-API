@@ -2,3 +2,12 @@ bson==0.5.10
 Flask==1.1.2
 pymongo==3.11.3
 gunicorn==19.9.0
+
+translate==3.5.0
+
+textblob==0.15.3
+requests==2.25.1
+
+google-trans-new==1.1.9
+googletrans==3.0.0
+goslate==1.5.1
