@@ -26,8 +26,7 @@ class MTS(object):
                     _text, lang_tgt="en")
             except:
                 try:
-                    _gs = goslate.Goslate()
-                    _text = _gs.translate(_text, _lang)
+                    _gs = goslate.Goslate()                    
                     _text = _gs.translate(_text, 'en')
                 except:
                     return None

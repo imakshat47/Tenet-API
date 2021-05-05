@@ -31,7 +31,7 @@ def response(data={}, code=200):
     response = make_response(jd(resp))
     response.headers['Status-Code'] = resp['code']
     response.headers['Content-Type'] = "application/json"
-    # response.headers['Access-Control-Allow-Origin'] = "*"
+    response.headers['Access-Control-Allow-Origin'] = "*"
     return response
 
 # routes
