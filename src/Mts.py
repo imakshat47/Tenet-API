@@ -13,7 +13,10 @@ class MTS(object):
         self.__translator = Translator()
         self.__google_translator = google_translator()
 
-    def _translator(self, _text = " ", _lang="en"):
+    def _translator(self, _text = None, _lang="en"):
+        if _text == None:
+            return None
+        
         try:
             _translated = self.__translator.translate(_text, dest=_lang)
             _translated = self.__translator.translate(_text, dest="en")
