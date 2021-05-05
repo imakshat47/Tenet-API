@@ -13,7 +13,7 @@ class MTS(object):
         self.__translator = Translator()
         self.__google_translator = google_translator()
 
-    def _translator(self, _text, _lang="en"):
+    def _translator(self, _text = " ", _lang="en"):
         try:
             _translated = self.__translator.translate(_text, dest=_lang)
             _translated = self.__translator.translate(_text, dest="en")
@@ -25,9 +25,12 @@ class MTS(object):
                 _text = self.__google_translator.translate(
                     _text, lang_tgt="en")
             except:
-                _gs = goslate.Goslate()
-                _text = _gs.translate(_text, _lang)
-                _text = _gs.translate(_text, 'en')
+                try:
+                    _gs = goslate.Goslate()
+                    _text = _gs.translate(_text, _lang)
+                    _text = _gs.translate(_text, 'en')
+                except:
+                    return None
 
         txtBlob = TextBlob(_text)
         _text = str(txtBlob.correct())

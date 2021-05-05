@@ -15,6 +15,8 @@ __db = __client["tenet"]
 db = __db["tweets"]
 
 # Json Dump
+
+
 def jd(obj):
     return json.dumps(obj, default=json_util.default)
 
@@ -55,24 +57,29 @@ def mts():
     _lang = request.form.get("lang")
     mts = MTS()
     _text = mts._translator(_text, _lang)
+    _code = 200
+    if _text == None:
+        _code = 100
     # return data
-    return response({"text": _text, "lang": _lang})
+    return response({"text": _text, "lang": _lang}, _code)
 
 
 @app.route('/record', methods=['GET', 'POST'])
-def record():   
-    _very_good = db.find({"polarity": {"$gte": 0.5}})
-    _good = db.find({"polarity": {"$gt": 0.0}})
+def record():
+    _very_good = db.find({"polarity": {"$gte": 0.5}}).count()
+    _good = db.find({"polarity": {"$gt": 0.0}}).count()
 
-    _neutral = db.find({"polarity": {"$eq": 0.0}})
+    _neutral = db.find({"polarity": {"$eq": 0.0}}).count()
 
-    _bad = db.find({"polarity": {"$lt": 0.0}})
-    _very_bad = db.find({"polarity": {"$lt": -0.5}})
+    _bad = db.find({"polarity": {"$lt": 0.0}}).count()
+    _very_bad = db.find({"polarity": {"$lt": -0.5}}).count()
 
-    _left_processed = db.find({"polarity": None}).count()
     _total = db.find().count()
-    _processed = int(int(_total) - int(_left_processed))
-    
+    _left_processed = db.find({"polarity": {"$exists": False}}).count()
+    _processed = db.find({"polarity": {"$exists": True}}).count()
+
+    _differ_polarity = db.find(
+        {"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
     # return data
     return response({"Total Record": _total, "Total Record Processed": _processed, "Total Record Not Processed": _left_processed,  "Total Record Imporved by MTS": _differ_polarity, "ordinals": {"Netural": _neutral, "Good": _good, "Very Good": _very_good, "Bad": _bad, "Very Bad": _very_bad}})
 
