@@ -37,5 +37,8 @@ class MTS(object):
 
         txtBlob = TextBlob(_text)
         _text = str(txtBlob.correct())
-        _text = str(txtBlob.translate(to='en'))    
+        try:
+            _text = str(txtBlob.translate(to='en'))    
+        except:
+            _text = _text
         return _text
