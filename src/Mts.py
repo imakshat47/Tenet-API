@@ -32,11 +32,10 @@ class MTS(object):
                     _gs = goslate.Goslate()                    
                     _text = _gs.translate(_text, 'en')
                 except:
-                    return None
+                    _translator = trans(to_lang="en")
+                    _text = _translator.translate(_text)
 
         txtBlob = TextBlob(_text)
         _text = str(txtBlob.correct())
-        # _text = str(txtBlob.translate(to='en'))
-        _translator = trans(to_lang="en")
-        _text = _translator.translate(_text)
+        _text = str(txtBlob.translate(to='en'))    
         return _text

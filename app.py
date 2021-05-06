@@ -50,6 +50,16 @@ def response(data={}, code=200):
 #     return response({"polarity": polarity, "pos_polarity": pos_polarity, "neg_polarity": neg_polarity})
 
 
+
+@app.route('/fetch/<limit>/<skip>', methods=['GET', 'POST'])
+def fetch(limit, skip = 0):
+    collection = db.find().skip(skip).limit(limit).sort("_id",-1)
+    data = []
+    for _collection in collection:
+        data.append(_collection)
+    return response({"data": data})
+
+
 @app.route('/mts', methods=['GET', 'POST'])
 def mts():
     # data = request.get_json()
