@@ -71,7 +71,7 @@
         // Storing data in form of JSON
         var res = await response.json();
         if (res.code == 200) {
-          console.log(res.data);
+          // console.log(res.data);
           // over api data
           var str = "";
           for (var key in res.data)
@@ -82,7 +82,7 @@
           for (var key in res.data.ordinals)
             chart_data.push([key, res.data.ordinals[key]]);
         }
-        console.log(chart_data);
+        // console.log(chart_data);
 
         google.charts.load("current", { packages: ["corechart"] });
         google.charts.setOnLoadCallback(drawChart);
@@ -104,8 +104,9 @@
         // Reload Time
         setTimeout(function () {
           get_chart_data();
-        }, 90000);
-        // 3000 = 3s
+        }, 600000);
+        // 600000 = 10mins
+        // 60 * 1000 = 60000 1min
       }
     </script>
   </body>
