@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <style>
+      * {
+        font-weight: 780 !important;
+      }
+    </style>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width" />
+    <title>Tenet System</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="divider"></div>
+        <div class="section">
+          <h5>Tenet: OM System</h5>
+          <p>Home</p>
+        </div>
+      </div>
+
+      <!-- <div class="row" id="badges">
+        <span class="new badge">Loading...</span>
+      </div> -->
+
+      <div class="row">
+        <div id="chart_div" style="min-width: 900px; min-height: 600px">
+          <div class="col m10 offset-m1">
+            <div class="progress">
+              <div class="indeterminate"></div>
+            </div>
+            <h5 class="center">Loading</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <!-- style="width: 900px; height: 800px" -->
+        <div id="line_chart" style="min-width: 900px; min-height: 500px">
+          <div class="col m10 offset-m1">
+            <div class="progress">
+              <div class="indeterminate"></div>
+            </div>
+            <h5 class="center">Loading</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script
+      src="https://www.gstatic.com/charts/loader.js"
+      type="text/javascript"
+    ></script>
+
+    <script type="text/javascript">
+      // loads Charts
+      var chart_data = [
+        [0, 0, 0],
+        [1, 0, -1],
+        [2, 0, 1],
+      ];
+
+      var line_chart = [["Dataset", "Actual", "Improved"]];
+
+      get_chart_data();
+
+      //   Get Chard Data Method
+      async function get_chart_data() {
+        M.toast({
+          html: "<b>Chart Loading...</b>",
+          classes: "rounded white-text blue lighten-1",
+        });
+
+        var url = new URL(window.location.href);
+        var limit = url.searchParams.get("limit");
+        var skip = url.searchParams.get("skip");
+        if (limit == null) limit = 500;
+        if (skip == null) skip = 500;
+        const response = await fetch(
+          `http://127.0.0.1:5000/scatterchart/${limit}/${skip}`
+        );
+        var count = 0;
+        var limit = 50;
+        // Storing data in form of JSON
+        var res = await response.json();
+        if (res.code == 200) {
+          //   console.log(res.data);
+          res_arr = res.data.data;
+          res_arr.forEach((ele) => {
+            // console.log(ele);
+            chart_data.push([count, ele["polarity"], ele["trans_polarity"]]);
+            line_chart.push([
+              `${count}`,
+              ele["polarity"],
+              ele["trans_polarity"],
+            ]);
+            count += 1;
+          });
+
+          google.charts.load("current", { packages: ["corechart", "scatter"] });
+          google.charts.setOnLoadCallback(drawChart);
+          google.charts.setOnLoadCallback(drawStuff);
+
+          function drawChart() {
+            var _data = [
+              ["Year", "Sales", "Expenses"],
+              ["2004", 1000, 400],
+              ["2005", 1170, 460],
+              ["2006", 660, 1120],
+              ["2007", 1030, 540],
+            ];
+            var _data = line_chart;
+            var data = google.visualization.arrayToDataTable(_data);
+
+            var options = {
+              title: "Result: Improved Dataset",
+              curveType: "function",
+              legend: { position: "bottom" },
+            };
+
+            var chart = new google.visualization.LineChart(
+              document.getElementById("line_chart")
+            );
+
+            chart.draw(data, options);
+          }
+
+          function drawStuff() {
+            var chartDiv = document.getElementById("chart_div");
+
+            var data = new google.visualization.DataTable();
+            data.addColumn("number", "Numer of Dataset");
+            data.addColumn("number", "Actual Polarity");
+            data.addColumn("number", "Improved Polarity");
+
+            data.addRows(chart_data);
+
+            var materialOptions = {
+              chart: {
+                title: "Result: Machine Translation System",
+                subtitle: "Improved Result for MTS",
+                colors: ["#087037"],
+                pointShape: "star",
+              },
+              width: 1050,
+              series: {
+                0: { axis: "Actual Polarity" },
+                1: { axis: "Improved Polarity" },
+              },
+              axes: {
+                y: {
+                  "Actual Polarity": { label: "Actual Polarity" },
+                  "Improved Polarity": { label: "Improved Polarity" },
+                },
+              },
+            };
+
+            function drawMaterialChart() {
+              var materialChart = new google.charts.Scatter(chartDiv);
+              materialChart.draw(
+                data,
+                google.charts.Scatter.convertOptions(materialOptions)
+              );
+            }
+
+            drawMaterialChart();
+          }
+        }
+                
+        // Reload Time
+        // 60 * 1000 = 60000 1min
+        // 600000 = 10mins
+        //   setTimeout(function () {
+        //     get_chart_data();
+        //   }, 6000);
+      }
+    </script>
+  </body>
+</html>

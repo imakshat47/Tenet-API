@@ -1,28 +1,28 @@
-from flask import Flask, json, request, make_response
-from bson import json_util
-import key
-import pymongo
-import os
-from os import environ
-from src.Mts import MTS
+try:    
+    from flask import Flask, json, request, make_response    
+    from pymongo import MongoClient
+    from bson import json_util    
+    from src.Mts import MTS
+    import key
+    import os
+    from os import environ
+    import random
+except Exception as e:
+    exit("Missing Lib: " + str(e))
 
 # app
 app = Flask(__name__)
 
 # Mongo Object
-__client = pymongo.MongoClient(key._mongo_uri)
+__client = MongoClient(key._mongo_uri)
 __db = __client["tenet"]
 db = __db["tweets"]
 
 # Json Dump
-
-
 def jd(obj):
     return json.dumps(obj, default=json_util.default)
 
 # Response
-
-
 def response(data={}, code=200):
     resp = {
         "code": code,
@@ -34,9 +34,8 @@ def response(data={}, code=200):
     response.headers['Access-Control-Allow-Origin'] = "*"
     return response
 
+
 # routes
-
-
 # @app.route('/', methods=['GET', 'POST'])
 # def result():
 #     polarity = []
@@ -49,6 +48,15 @@ def response(data={}, code=200):
 #     # return data
 #     return response({"polarity": polarity, "pos_polarity": pos_polarity, "neg_polarity": neg_polarity})
 
+
+# scatterchart
+@app.route('/scatterchart/<limit>/<skip>', methods=['GET', 'POST'])
+def scatterchart(limit = 100, skip = 300):        
+    collection = db.find({"$expr": {"$ne": ["$polarity", "$trans_polarity"]}, 'polarity': {"$ne" : "0.0"}},{"polarity": 1, "trans_polarity": 1}).skip(int(skip)).limit(int(limit))
+    data = []
+    for _collection in collection:        
+        data.append(_collection)    
+    return response({"count":limit, "offset": skip, "data": data})
 
 
 @app.route('/fetch/<limit>/<skip>', methods=['GET', 'POST'])
@@ -93,8 +101,7 @@ def record():
     _left_processed = db.find({"polarity": {"$exists": False}}).count()
     _processed = db.find({"polarity": {"$exists": True}}).count()
 
-    _differ_polarity = db.find(
-        {"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
+    _differ_polarity = db.find({"$expr": {"$ne": ["$polarity", "$trans_polarity"]}}).count()
     # return data
     return response({"Total Record": _total, "Total Record Processed": _processed, "Total Record Not Processed": _left_processed,  "Total Record Imporved by MTS": _differ_polarity, "ordinals": {"Netural": _neutral, "Good": _good, "Very Good": _very_good, "Bad": _bad, "Very Bad": _very_bad}})
 
@@ -107,4 +114,4 @@ def page_not_found(error):
 
 # Driver Method
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5000, debug=True)    
