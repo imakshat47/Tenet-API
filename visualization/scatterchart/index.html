@@ -26,8 +26,7 @@
       <div class="row">
         <div class="divider"></div>
         <div class="section">
-          <h5>Tenet: OM System</h5>
-          <p>Home</p>
+          <h5>Tenet: Opinion Mining System</h5>          
         </div>
       </div>
 
@@ -36,7 +35,7 @@
       </div> -->
 
       <div class="row">
-        <div id="chart_div" style="min-width: 900px; min-height: 600px">
+        <div id="chart_div" style="min-width: 1000px; min-height: 600px">
           <div class="col m10 offset-m1">
             <div class="progress">
               <div class="indeterminate"></div>
@@ -48,7 +47,7 @@
 
       <div class="row">
         <!-- style="width: 900px; height: 800px" -->
-        <div id="line_chart" style="min-width: 900px; min-height: 500px">
+        <div id="line_chart" style="min-width: 1000px; min-height: 500px">
           <div class="col m10 offset-m1">
             <div class="progress">
               <div class="indeterminate"></div>
@@ -74,7 +73,7 @@
         [2, 0, 1],
       ];
 
-      var line_chart = [["Dataset", "Actual", "Improved"]];
+      var line_chart = [["Ratio", "Immediate Text Ratio", "Output Text Ratio"]];
 
       get_chart_data();
 
@@ -88,13 +87,14 @@
         var url = new URL(window.location.href);
         var limit = url.searchParams.get("limit");
         var skip = url.searchParams.get("offset");
-        if (limit == null) limit = 500;
-        if (skip == null) skip = 500;
-        console.log("Limit: ", limit, " Offset: ", skip)
+        if (limit == null) limit = 200;
+        if (skip == null) skip = 2595;
+        console.log("Limit: ", limit, " Offset: ", skip);
         const response = await fetch(
           `https://tenet-api.herokuapp.com/scatterchart/${limit}/${skip}`
         );
         var count = 0;
+        var _count = 10;
         // Storing data in form of JSON
         var res = await response.json();
         if (res.code == 200) {
@@ -104,11 +104,12 @@
             // console.log(ele);
             chart_data.push([count, ele["polarity"], ele["trans_polarity"]]);
             line_chart.push([
-              `${count}`,
-              ele["polarity"],
-              ele["trans_polarity"],
+              `${_count} k`,
+              Math.abs(ele["polarity"] > 0.8 ? 0.8 : ele["polarity"]),
+              Math.abs(ele["trans_polarity"]),
             ]);
             count += 1;
+            _count += 1;
           });
 
           google.charts.load("current", { packages: ["corechart", "scatter"] });
@@ -119,7 +120,7 @@
             var data = google.visualization.arrayToDataTable(line_chart);
 
             var options = {
-              title: "Result: Improved Dataset",
+              title: "Result: MTS Text Semantic Ratio",
               curveType: "function",
               legend: { position: "bottom" },
             };
@@ -135,28 +136,49 @@
             var chartDiv = document.getElementById("chart_div");
 
             var data = new google.visualization.DataTable();
-            data.addColumn("number", "Numer of Dataset");
-            data.addColumn("number", "Actual Polarity");
-            data.addColumn("number", "Improved Polarity");
+            data.addColumn("number", "Dataset");
+            data.addColumn("number", "Semantics for Immediate Result ");
+            data.addColumn("number", "Semantics for Output Result");
 
             data.addRows(chart_data);
 
             var materialOptions = {
               chart: {
                 title: "Result: Machine Translation System",
-                subtitle: "Improved Result for MTS",
-                colors: ["#087037"],
-                pointShape: "star",
+                subtitle: "Immediate Vs Output Semantics Result",
               },
-              width: 1050,
+              width: 1150,
+              fontSize: 14,
+              hAxis: {                
+                titleTextStyle: {
+                  color: "#000",
+                  fontName: "sans-serif",
+                  fontSize: 18,
+                  bold: true,
+                  italic: false,
+                },
+              },
+              vAxis: {                
+                titleTextStyle: {
+                  color: "#000",
+                  fontName: "sans-serif",
+                  fontSize: 18,
+                  bold: true,
+                  italic: false,
+                },
+              },
               series: {
-                0: { axis: "Actual Polarity" },
-                1: { axis: "Improved Polarity" },
+                0: { axis: "Semantics for Immediate Result " },
+                1: { axis: "Semantics for Output Result" },
               },
               axes: {
                 y: {
-                  "Actual Polarity": { label: "Actual Polarity" },
-                  "Improved Polarity": { label: "Improved Polarity" },
+                  "Semantics for Immediate Result ": {
+                    label: "Semantics for Immediate Result ",
+                  },
+                  "Semantics for Output Result": {
+                    label: "Semantics for Output Result",
+                  },
                 },
               },
             };
