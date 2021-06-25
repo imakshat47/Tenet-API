@@ -5,3 +5,5 @@ _key.py
 __pycache__
 
 env
+
+.vscode

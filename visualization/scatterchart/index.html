@@ -120,7 +120,7 @@
             var data = google.visualization.arrayToDataTable(line_chart);
 
             var options = {
-              title: "Result: MTS Text Semantic Ratio",
+              title: "Result | Tenet System Semantic Ratio",
               curveType: "function",
               legend: { position: "bottom" },
             };
@@ -137,15 +137,15 @@
 
             var data = new google.visualization.DataTable();
             data.addColumn("number", "Dataset");
-            data.addColumn("number", "Semantics for Immediate Result ");
-            data.addColumn("number", "Semantics for Output Result");
+            data.addColumn("number", "Sentiment Score for Immediate Result ");
+            data.addColumn("number", "Sentiment Score for Output Result");
 
             data.addRows(chart_data);
 
             var materialOptions = {
               chart: {
-                title: "Result: Machine Translation System",
-                subtitle: "Immediate Vs Output Semantics Result",
+                title: "Result | Tenet: Realtime Opinion Mining System",
+                subtitle: "Immediate Vs Output Result",
               },
               width: 1150,
               fontSize: 14,
@@ -168,16 +168,16 @@
                 },
               },
               series: {
-                0: { axis: "Semantics for Immediate Result " },
-                1: { axis: "Semantics for Output Result" },
+                0: { axis: "Sentiment Score for Immediate Result " },
+                1: { axis: "Sentiment Score for Output Result" },
               },
               axes: {
                 y: {
-                  "Semantics for Immediate Result ": {
-                    label: "Semantics for Immediate Result ",
+                  "Sentiment Score for Immediate Result ": {
+                    label: "Sentiment Score for Immediate Result ",
                   },
-                  "Semantics for Output Result": {
-                    label: "Semantics for Output Result",
+                  "Sentiment Score for Output Result": {
+                    label: "Sentiment Score for Output Result",
                   },
                 },
               },

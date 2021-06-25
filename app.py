@@ -1,13 +1,13 @@
 try:    
     from flask import Flask, json, request, make_response    
     from pymongo import MongoClient
-    from bson import json_util    
+    # from bson import json_util    
     from src.Mts import MTS
     import key
     import os
     from os import environ
     import random
-except Exception as e:
+except ModuleNotFoundError:
     exit("Missing Lib: " + str(e))
 
 # app
