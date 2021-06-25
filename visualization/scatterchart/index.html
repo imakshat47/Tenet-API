@@ -73,7 +73,7 @@
         [2, 0, 1],
       ];
 
-      var line_chart = [["Ratio", "Immediate Text Ratio", "Output Text Ratio"]];
+      var line_chart = [["Ratio", "Intermediate Text Ratio", "Output Text Ratio"]];
 
       get_chart_data();
 
@@ -137,7 +137,7 @@
 
             var data = new google.visualization.DataTable();
             data.addColumn("number", "Dataset");
-            data.addColumn("number", "Sentiment Score for Immediate Result ");
+            data.addColumn("number", "Sentiment Score for Intermediate Result ");
             data.addColumn("number", "Sentiment Score for Output Result");
 
             data.addRows(chart_data);
@@ -145,7 +145,7 @@
             var materialOptions = {
               chart: {
                 title: "Result | Tenet: Realtime Opinion Mining System",
-                subtitle: "Immediate Vs Output Result",
+                subtitle: "Intermediate Vs Output Result",
               },
               width: 1150,
               fontSize: 14,
@@ -168,13 +168,13 @@
                 },
               },
               series: {
-                0: { axis: "Sentiment Score for Immediate Result " },
+                0: { axis: "Sentiment Score for Intermediate Result " },
                 1: { axis: "Sentiment Score for Output Result" },
               },
               axes: {
                 y: {
-                  "Sentiment Score for Immediate Result ": {
-                    label: "Sentiment Score for Immediate Result ",
+                  "Sentiment Score for Intermediate Result ": {
+                    label: "Sentiment Score for Intermediate Result ",
                   },
                   "Sentiment Score for Output Result": {
                     label: "Sentiment Score for Output Result",
